@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notice de Calcul Structurale - R+2 Skikda</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .math {
+            font-family: 'Times New Roman', Times, serif;
+            font-style: italic;
+        }
+        @media print {
+            #sidebar { display: none !important; }
+            #main-content { width: 100% !important; margin-left: 0 !important; padding: 0 !important; }
+            .print-hide { display: none !important; }
+            .section { display: block !important; page-break-after: always; padding-top: 1.5rem; }
+            .section:last-child { page-break-after: auto; }
+            body { background: white; }
+            .shadow-sm, .shadow-md, .shadow-lg { box-shadow: none !important; border: 1px solid #e5e7eb; }
+        }
+        .nav-item.active {
+            background-color: #1e293b;
+            border-left: 4px solid #3b82f6;
+            color: white;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e3a8a',
+                        secondary: '#475569',
+                        accent: '#ef4444',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 flex h-screen overflow-hidden text-gray-800">
+
+
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="w-68 bg-slate-900 text-slate-300 flex flex-col h-full shrink-0 transition-all duration-300 hidden md:flex z-20">
+        <div class="p-5 bg-slate-950 border-b border-slate-800">
+            <h1 class="text-lg font-bold text-white tracking-wider flex items-center gap-2">
+                <span class="bg-blue-600 text-white p-1 rounded">RPA</span>
+                <span>CDE SKIKDA</span>
+            </h1>
+            <p class="text-xs text-slate-400 mt-1">Rapport de Note Sismique R+2</p>
+        </div>
+        <nav class="flex-1 overflow-y-auto py-3">
+            <ul class="space-y-1 px-2">
+                <li><button onclick="showSection('intro')" id="nav-intro" class="nav-item active w-full text-left px-4 py-2.5 rounded hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-2 text-sm">
+                    <span>1. Présentation & Objet</span>
+                </button></li>
+                <li><button onclick="showSection('materiaux')" id="nav-materiaux" class="nav-item w-full text-left px-4 py-2.5 rounded hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-2 text-sm">
+                    <span>2. Matériaux & Charges</span>
+                </button></li>
+                <li><button onclick="showSection('analyse')" id="nav-analyse" class="nav-item w-full text-left px-4 py-2.5 rounded hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-2 text-sm">
+                    <span>3. Analyse Sismique</span>
+                </button></li>
+                <li><button onclick="showSection('tranchant')" id="nav-tranchant" class="nav-item w-full text-left px-4 py-2.5 rounded hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-2 text-sm">
+                    <span>4. Effort Tranchant Base</span>
+                </button></li>
+                <li><button onclick="showSection('poteaux')" id="nav-poteaux" class="nav-item w-full text-left px-4 py-2.5 rounded hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-2 text-sm">
+                    <span>5. Vérification Poteaux</span>
+                </button></li>
+                <li><button onclick="showSection('poutres')" id="nav-poutres" class="nav-item w-full text-left px-4 py-2.5 rounded hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-2 text-sm">
+                    <span>6. Vérification Poutres</span>
+                </button></li>
+                <li><button onclick="showSection('synthese')" id="nav-synthese" class="nav-item w-full text-left px-4 py-2.5 rounded hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-2 text-sm">
+                    <span>7. Synthèse & Diagnostics</span>
+                </button></li>
+                <li><button onclick="showSection('references')" id="nav-references" class="nav-item w-full text-left px-4 py-2.5 rounded hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-2 text-sm">
+                    <span>8. Références de calcul</span>
+                </button></li>
+            </ul>
+        </nav>
+       <div class="p-4 bg-slate-950 border-t border-slate-800 print-hide">
+    <button
+        onclick="window.open('https://mega.nz/file/7oZj2YSZ#EUMf83tff2neSGTIAxIPqQoNXzN8nu2pox31AO1KS9E', '_blank')"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-3 rounded text-sm font-semibold shadow flex items-center justify-center gap-2 transition">
+
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 4v10m0 0l-4-4m4 4l4-4m-9 6h10">
+            </path>
+        </svg>
+
+        Télécharger le fichier
+    </button>
+</div>
+    </aside>
+
+
+    <!-- Main Content Container -->
+    <main id="main-content" class="flex-1 h-full overflow-y-auto w-full relative">
+        
+        <!-- Mobile Header -->
+        <div class="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center sticky top-0 z-10 print-hide">
+            <h1 class="text-md font-bold">RPA 2024 | Skikda R+2</h1>
+            <button onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="text-white focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-800 text-white absolute w-full z-20 print-hide shadow-lg">
+            <ul class="flex flex-col text-sm">
+                <li><button onclick="showSection('intro'); document.getElementById('mobile-menu').classList.add('hidden')" class="w-full text-left px-5 py-3 border-b border-slate-700">1. Présentation & Objet</button></li>
+                <li><button onclick="showSection('materiaux'); document.getElementById('mobile-menu').classList.add('hidden')" class="w-full text-left px-5 py-3 border-b border-slate-700">2. Matériaux & Charges</button></li>
+                <li><button onclick="showSection('analyse'); document.getElementById('mobile-menu').classList.add('hidden')" class="w-full text-left px-5 py-3 border-b border-slate-700">3. Analyse Sismique</button></li>
+                <li><button onclick="showSection('tranchant'); document.getElementById('mobile-menu').classList.add('hidden')" class="w-full text-left px-5 py-3 border-b border-slate-700">4. Effort Tranchant Base</button></li>
+                <li><button onclick="showSection('poteaux'); document.getElementById('mobile-menu').classList.add('hidden')" class="w-full text-left px-5 py-3 border-b border-slate-700">5. Vérification Poteaux</button></li>
+                <li><button onclick="showSection('poutres'); document.getElementById('mobile-menu').classList.add('hidden')" class="w-full text-left px-5 py-3 border-b border-slate-700">6. Vérification Poutres</button></li>
+                <li><button onclick="showSection('synthese'); document.getElementById('mobile-menu').classList.add('hidden')" class="w-full text-left px-5 py-3 border-b border-slate-700">7. Synthèse & Diagnostics</button></li>
+                <li><button onclick="showSection('references'); document.getElementById('mobile-menu').classList.add('hidden')" class="w-full text-left px-5 py-3">8. Références de calcul</button></li>
+            </ul>
+        </div>
+
+        <div class="max-w-5xl mx-auto p-4 md:p-8 pb-20">
+            
+            <!-- Cover Header -->
+            <header class="mb-8 border-b-2 border-blue-800 pb-5">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <span class="text-xs font-bold text-blue-600 uppercase tracking-widest">RAPPORT STRUCTURAL - EXERCICE D'APPLICATION RPA 2024</span>
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-1">Vérification de Structure Sismique R+2</h2>
+                        <p class="text-sm md:text-base text-gray-600 mt-1">Conformité parasismique d'un bâtiment de grande importance</p>
+                    </div>
+                    <div class="text-left sm:text-right text-xs text-slate-600 bg-white p-3 rounded-lg border border-slate-200 shadow-sm w-full sm:w-auto">
+                        <p><span class="font-semibold">Localisation :</span> Skikda, Algérie</p>
+                        <p><span class="font-semibold">Date d'Analyse :</span> 10 Juin 2026</p>
+                        <p><span class="font-semibold">Logiciel :</span> Robot Structural Analysis 2024</p>
+                    </div>
+                </div>
+            </header>
+
+
+            <!-- SECTION 1: Présentation & Objet -->
+            <section id="intro" class="section block space-y-6">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                        <span class="bg-blue-600 text-white w-7 h-7 rounded-full flex items-center justify-center text-xs">1</span>
+                        Objet du Rapport de Diagnostic Sismique
+                    </h3>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-3">
+                        La présente notice de calcul a pour objet la <strong>vérification réglementaire des éléments structuraux existants</strong> d'un bâtiment de grande importance , composé d'un Rez-de-Chaussée (RDC) et de deux étages (<strong class="text-blue-700">R+2</strong>). 
+                    </p>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        L'ouvrage est implanté dans une <strong>zone de sismicité élevée (Zone VI)</strong> sur sol meuble (Argile), exigeant une application stricte des règles du <span class="font-semibold text-slate-800">RPA 2024</span> et des méthodes réglementaires du Béton Armé en vigeur.
+                    </p>
+                </div>
+
+                <!-- 3D Model Visual Representation -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                    <h4 class="text-md font-bold text-slate-900 mb-3">Représentation 2D du Modèle Filaire (Robot)</h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                        <div class="md:col-span-2 bg-slate-100 p-4 rounded-lg flex items-center justify-center border border-slate-200">
+                            <!-- SVG Building Visualization -->
+                            <svg class="w-full max-w-sm h-48" viewBox="0 0 400 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Ground Foundation -->
+                                <line x1="40" y1="200" x2="360" y2="200" stroke="#94a3b8" stroke-width="4" stroke-dasharray="5 5"/>
+                                <rect x="55" y="195" width="20" height="8" fill="#475569" rx="1"/>
+                                <rect x="145" y="195" width="20" height="8" fill="#475569" rx="1"/>
+                                <rect x="235" y="195" width="20" height="8" fill="#475569" rx="1"/>
+                                <rect x="325" y="195" width="20" height="8" fill="#475569" rx="1"/>
+
+                                <!-- Columns Vertical -->
+                                <!-- RDC columns -->
+                                <line x1="65" y1="200" x2="65" y2="140" stroke="#0284c7" stroke-width="5" />
+                                <line x1="155" y1="200" x2="155" y2="140" stroke="#0284c7" stroke-width="5" />
+                                <line x1="245" y1="200" x2="245" y2="140" stroke="#0284c7" stroke-width="5" />
+                                <line x1="335" y1="200" x2="335" y2="140" stroke="#0284c7" stroke-width="5" />
+                                <!-- Etage 1 Columns -->
+                                <line x1="65" y1="140" x2="65" y2="90" stroke="#4f46e5" stroke-width="4" />
+                                <line x1="155" y1="140" x2="155" y2="90" stroke="#4f46e5" stroke-width="4" />
+                                <line x1="245" y1="140" x2="245" y2="90" stroke="#4f46e5" stroke-width="4" />
+                                <line x1="335" y1="140" x2="335" y2="90" stroke="#4f46e5" stroke-width="4" />
+                                <!-- Etage 2 Columns -->
+                                <line x1="65" y1="90" x2="65" y2="40" stroke="#16a34a" stroke-width="4" />
+                                <line x1="155" y1="90" x2="155" y2="40" stroke="#16a34a" stroke-width="4" />
+                                <line x1="245" y1="90" x2="245" y2="40" stroke="#16a34a" stroke-width="4" />
+                                <line x1="335" y1="90" x2="335" y2="40" stroke="#16a34a" stroke-width="4" />
+
+                                <!-- Horizontal Beams -->
+                                <!-- Plancher 1 -->
+                                <line x1="65" y1="140" x2="335" y2="140" stroke="#f59e0b" stroke-width="4"/>
+                                <!-- Plancher 2 -->
+                                <line x1="65" y1="90" x2="335" y2="90" stroke="#e11d48" stroke-width="4"/>
+                                <!-- Toiture Terrasse -->
+                                <line x1="65" y1="40" x2="335" y2="40" stroke="#0d9488" stroke-width="4"/>
+
+                                <!-- Voile (Shear wall representation on right side) -->
+                                <path d="M245,200 L245,40 L255,40 L255,200 Z" fill="#b91c1c" fill-opacity="0.25" stroke="#b91c1c" stroke-width="1" stroke-dasharray="2 2"/>
+
+                                <!-- Annotations -->
+                                <text x="10" y="50" fill="#16a34a" class="text-[9px] font-bold">Étage 3 (Terrasse)</text>
+                                <text x="10" y="100" fill="#4f46e5" class="text-[9px] font-bold">Étage 2</text>
+                                <text x="10" y="150" fill="#0284c7" class="text-[9px] font-bold">Étage 1 (RDC)</text>
+                            </svg>
+                        </div>
+                        <div class="space-y-3">
+                            <h5 class="text-sm font-bold text-slate-800 border-b pb-1">Données Géométriques</h5>
+                            <ul class="text-xs text-slate-600 space-y-1">
+                                <li><strong>Longueur totale :</strong> 23.35 m</li>
+                                <li><strong>Largeur totale :</strong> 9.55 m</li>
+                                <li><strong>Hauteur RDC :</strong> 3.74 m</li>
+                                <li><strong>Hauteur étage cour. :</strong> 3.74 m</li>
+                                <li><strong>Hauteur totale :</strong> 11.22 m</li>
+                                <li><strong>Système porteur :</strong> Mixte (Portiques + Voile)</li>
+                                <li><strong>Contrainte Sol :</strong> 1.50 bar</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- SECTION 2: Matériaux et Evaluation des Charges -->
+            <section id="materiaux" class="section hidden space-y-6">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                        <span class="bg-blue-600 text-white w-7 h-7 rounded-full flex items-center justify-center text-xs">2</span>
+                        Matériaux et Charges Réglementaires
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Beton -->
+                        <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                            <h4 class="font-bold text-slate-800 text-sm mb-2 flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+                                Béton Armé - Classe C25/30
+                            </h4>
+                            <ul class="text-xs text-slate-600 space-y-1">
+                                <li>Résistance de calcul <span class="math font-semibold">f<sub>ck</sub></span> : <span class="text-blue-700 font-bold">25.0 MPa</span></li>
+                                <li>Contrainte de calcul ELU (<span class="math">f<sub>bu</sub></span>) : <span class="font-semibold">14.17 MPa</span></li>
+                                <li>Contrainte de calcul sism. (<span class="math">f<sub>b_seisme</sub></span>) : <span class="font-semibold">19.5 MPa</span></li>
+                            </ul>
+                        </div>
+                        <!-- Acier -->
+                        <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                            <h4 class="font-bold text-slate-800 text-sm mb-2 flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+                                Acier Longitudinal - FeE500
+                            </h4>
+                            <ul class="text-xs text-slate-600 space-y-1">
+                                <li>Limite élastique <span class="math font-semibold">f<sub>y</sub></span> : <span class="text-emerald-700 font-bold">500.0 MPa</span></li>
+                                <li>Module d'élasticité <span class="math">E<sub>s</sub></span> : <span class="font-semibold">200 000 MPa</span></li>
+                                <li>Contrainte de calcul à l'ELU (<span class="math">f<sub>su</sub></span>) : <span class="font-semibold">435 MPa</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charges Evaluations -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                    <h4 class="text-md font-bold text-slate-900 mb-3 border-b pb-2">Évaluation des Actions et Charges Surfaciques</h4>
+                    
+                    <div class="overflow-x-auto text-xs">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 uppercase text-[10px] tracking-wider">
+                                    <th class="p-2 border">Désignation du Plancher</th>
+                                    <th class="p-2 border text-right">G (Charge Permanente)</th>
+                                    <th class="p-2 border text-right">Q (Surcharge d'Exploit.)</th>
+                                    <th class="p-2 border">Remarques</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b">
+                                    <td class="p-2 font-medium">1. Plancher terrasse accessible</td>
+                                    <td class="p-2 text-right text-blue-800 font-semibold">3.35 kN/m²</td>
+                                    <td class="p-2 text-right text-amber-800 font-semibold">4.00 kN/m²</td>
+                                    <td class="p-2 text-gray-500">Protection, forme de pente, isolation incluse.</td>
+                                </tr>
+                                <tr class="border-b bg-slate-50">
+                                    <td class="p-2 font-medium">2. Plancher étage courant</td>
+                                    <td class="p-2 text-right text-blue-800 font-semibold">4.35 kN/m²</td>
+                                    <td class="p-2 text-right text-amber-800 font-semibold">2.50 kN/m²</td>
+                                    <td class="p-2 text-gray-500">Habitation, cloisons de distribution comprises.</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="p-2 font-medium">3. Circulation générale / Escaliers</td>
+                                    <td class="p-2 text-right text-blue-800 font-semibold">1.50 kN/m</td>
+                                    <td class="p-2 text-right text-amber-800 font-semibold">2.50 kN/m</td>
+                                    <td class="p-2 text-gray-500">Surcharge majorée pour circulation (escaliers).</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded text-[11px] text-blue-900 leading-relaxed">
+                        <strong>Note :</strong> Robot Structural Analysis calcule et intègre automatiquement le poids propre des éléments structuraux en béton armé (poteaux, poutres principales, poutres secondaires et voiles) au cas de charge permanente <span class="font-bold">G</span>.
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- SECTION 3: Analyse Sismique -->
+            <section id="analyse" class="section hidden space-y-6">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                        <span class="bg-blue-600 text-white w-7 h-7 rounded-full flex items-center justify-center text-xs">3</span>
+                        Résultats de l'Analyse Sismique
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 text-xs">
+                        <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                            <span class="text-gray-500">Zone Sismique</span>
+                            <div class="text-base font-extrabold text-red-600">VI (Sismicité Élevée)</div>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                            <span class="text-gray-500">Facteur d'importance</span>
+                            <div class="text-base font-extrabold text-blue-700">Classe 1B (Fort)</div>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                            <span class="text-gray-500">Nature du Sol</span>
+                            <div class="text-base font-extrabold text-amber-700">Argileux (Sol Meuble)</div>
+                        </div>
+                    </div>
+
+                    <!-- Coefficient R -->
+                    <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg text-sm mb-6">
+                        <h4 class="font-bold text-blue-900 mb-2">Calcul du Coefficient de Comportement (R)</h4>
+                        <p class="text-blue-800 text-xs leading-relaxed mb-3">
+                            En appliquant l'approche B par manque d'une base de données exhaustive des paramètres physiques des matériaux réels d'origine, le coefficient est justifié par l'existence de la documentation détaillée (plans, rapports géotechniques d'origine).
+                        </p>
+                        <div class="flex items-center gap-4">
+                            <div class="bg-white px-3 py-1 border border-blue-300 rounded text-blue-900 font-extrabold text-base">R = 1.50</div>
+                            <span class="text-xs text-blue-700 font-medium">Justifié selon l'évaluation par critères cumulatifs de qualité structurale.</span>
+                        </div>
+                    </div>
+
+                    <!-- Modal analysis table -->
+                    <h4 class="text-sm font-bold text-slate-900 mb-3 border-b pb-1">Données de Sortie Sismiques : Modes de Vibration Réels (Robot)</h4>
+                    <div class="overflow-x-auto text-xs">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 text-[10px] uppercase font-bold">
+                                    <th class="p-2 border">Cas/Mode</th>
+                                    <th class="p-2 border text-right">Fréquence [Hz]</th>
+                                    <th class="p-2 border text-right">Période [sec]</th>
+                                    <th class="p-2 border text-right">M. Cumul. UX [%]</th>
+                                    <th class="p-2 border text-right">M. Cumul. UY [%]</th>
+                                    <th class="p-2 border text-right">M. Modale UX [%]</th>
+                                    <th class="p-2 border text-right">M. Modale UY [%]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b font-medium bg-blue-50">
+                                    <td class="p-2">Mode 1 (Sens Y)</td>
+                                    <td class="p-2 text-right">2.85</td>
+                                    <td class="p-2 text-right font-bold text-blue-700">0.35 s</td>
+                                    <td class="p-2 text-right">0.01</td>
+                                    <td class="p-2 text-right font-bold">70.81</td>
+                                    <td class="p-2 text-right">0.01</td>
+                                    <td class="p-2 text-right">70.81</td>
+                                </tr>
+                                <tr class="border-b font-medium bg-emerald-50">
+                                    <td class="p-2">Mode 2 (Sens X)</td>
+                                    <td class="p-2 text-right">3.92</td>
+                                    <td class="p-2 text-right font-bold text-emerald-700">0.25 s</td>
+                                    <td class="p-2 text-right">67.10</td>
+                                    <td class="p-2 text-right font-bold">70.91</td>
+                                    <td class="p-2 text-right">67.09</td>
+                                    <td class="p-2 text-right">0.10</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="p-2">Mode 3</td>
+                                    <td class="p-2 text-right">4.22</td>
+                                    <td class="p-2 text-right">0.24 s</td>
+                                    <td class="p-2 text-right">69.41</td>
+                                    <td class="p-2 text-right">70.91</td>
+                                    <td class="p-2 text-right">2.31</td>
+                                    <td class="p-2 text-right">0.01</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="p-2">Mode 4</td>
+                                    <td class="p-2 text-right">5.45</td>
+                                    <td class="p-2 text-right">0.18 s</td>
+                                    <td class="p-2 text-right">69.51</td>
+                                    <td class="p-2 text-right">79.46</td>
+                                    <td class="p-2 text-right">0.10</td>
+                                    <td class="p-2 text-right">8.55</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- SECTION 4: Effort Tranchant à la base -->
+            <section id="tranchant" class="section hidden space-y-6">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                        <span class="bg-blue-600 text-white w-7 h-7 rounded-full flex items-center justify-center text-xs">4</span>
+                        Vérification de l'Effort Tranchant à la Base
+                    </h3>
+                    <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                        Conformément au <strong>RPA 2024</strong>, la résultante de l'effort sismique obtenue par combinaison spectrale (dynamique) à la base ne doit pas être inférieure à <span class="font-bold">80%</span> de l'effort tranchant statique calculé par la méthode statique équivalente.
+                    </p>
+
+                    <!-- Interactive Verification Table -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Sens X -->
+                        <div class="p-4 bg-slate-50 border rounded-lg">
+                            <h4 class="font-bold text-slate-900 text-sm mb-3 border-b pb-1 flex justify-between">
+                                <span>Sens Longitudinal (EX)</span>
+                                <span class="text-blue-600 font-mono">T = 0.25s</span>
+                            </h4>
+                            <div class="space-y-2 text-xs">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Effort Sismique Dynamique E<sub>x</sub> :</span>
+                                    <span class="font-bold text-blue-700">3520.16 kN</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Seuil de validation (80% V<sub>statique</sub>) :</span>
+                                    <span class="font-semibold text-slate-700">3415.86 kN</span>
+                                </div>
+                                <div class="mt-3 p-2 bg-emerald-50 text-emerald-900 rounded border border-emerald-200 font-bold flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                    E<sub>x</sub> &ge; 80% V (Vérifié)
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sens Y -->
+                        <div class="p-4 bg-slate-50 border rounded-lg">
+                            <h4 class="font-bold text-slate-900 text-sm mb-3 border-b pb-1 flex justify-between">
+                                <span>Sens Transversal (EY)</span>
+                                <span class="text-blue-600 font-mono">T = 0.35s</span>
+                            </h4>
+                            <div class="space-y-2 text-xs">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Effort Sismique Dynamique E<sub>y</sub> :</span>
+                                    <span class="font-bold text-blue-700">3593.25 kN</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Seuil de validation (80% V<sub>statique</sub>) :</span>
+                                    <span class="font-semibold text-slate-700">3415.86 kN</span>
+                                </div>
+                                <div class="mt-3 p-2 bg-emerald-50 text-emerald-900 rounded border border-emerald-200 font-bold flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                    E<sub>y</sub> &ge; 80% V (Vérifié)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Static Calculator Integration -->
+                    <div class="mt-6 p-4 bg-slate-100 rounded-lg border">
+                        <h4 class="font-bold text-slate-800 text-sm mb-2">Simulateur d'Effort Tranchant Réglementaire</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
+                            <div>
+                                <label class="block text-[10px] text-gray-500 uppercase font-semibold">Masse Participante (tonnes)</label>
+                                <input id="sim-mass" type="number" step="0.1" value="536.68" class="mt-1 block w-full rounded border-gray-300 shadow-sm p-2 text-xs font-mono bg-white border" oninput="recalcShear()">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-gray-500 uppercase font-semibold">R (Comportement)</label>
+                                <input id="sim-r" type="number" step="0.1" value="1.50" class="mt-1 block w-full rounded border-gray-300 shadow-sm p-2 text-xs font-mono bg-white border" oninput="recalcShear()">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-gray-500 uppercase font-semibold"> Spectre (Sad/g x lambda)</label>
+                                <input id="sim-accel" type="number" step="0.01" value="0.7956" class="mt-1 block w-full rounded border-gray-300 shadow-sm p-2 text-xs font-mono bg-white border" oninput="recalcShear()">
+                            </div>
+                        </div>
+                        <div class="mt-4 p-3 bg-white border rounded text-xs flex justify-between items-center">
+                            <div>
+                                <span class="text-gray-500">Effort Statique Théorique Estimé (V) :</span>
+                                <span id="sim-v-result" class="font-bold text-slate-900 ml-2">4269.83 kN</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-500">80% de V requis :</span>
+                                <span id="sim-v80-result" class="font-extrabold text-blue-700 ml-2">3415.86 kN</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- SECTION 5: Vérification des Poteaux -->
+            <section id="poteaux" class="section hidden space-y-6">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                        <span class="bg-blue-600 text-white w-7 h-7 rounded-full flex items-center justify-center text-xs">5</span>
+                        Vérification de l'Effort Normal Réduit des Poteaux
+                    </h3>
+                    <p class="text-xs text-slate-600 mb-4">
+                        La condition de non-flambement sous les combinaisons accidentelles impose de vérifier l'effort normal réduit au niveau des poteaux les plus sollicités (ex. zone d'angle et cage d'escalier) selon la formule : <span class="math font-bold">ν = N<sub>d</sub> / (B<sub>c</sub> × f<sub>c28</sub>) ≤ 0.35</span>.
+                    </p>
+
+                    <!-- Verification Module -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                        <!-- Interactive Input Form -->
+                        <div class="p-4 bg-slate-50 rounded-lg border">
+                            <h4 class="font-bold text-slate-800 text-sm mb-3">Vérificateur Dynamique - Poteau Central</h4>
+                            <div class="space-y-3 text-xs">
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-gray-500">Effort Normal Sism. N<sub>d</sub> (kN)</label>
+                                        <input id="poteau-nd" type="number" value="960.93" class="mt-1 block w-full rounded border p-2 font-mono" oninput="recalcPoteau()">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-500">Moment Fléchissant M<sub>u</sub> (kN.m)</label>
+                                        <input id="poteau-mu" type="number" value="295.03" class="mt-1 block w-full rounded border p-2 font-mono" oninput="recalcPoteau()">
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-gray-500">Largeur b (cm)</label>
+                                        <input id="poteau-b" type="number" value="40" class="mt-1 block w-full rounded border p-2 font-mono" oninput="recalcPoteau()">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-500">Hauteur h (cm)</label>
+                                        <input id="poteau-h" type="number" value="40" class="mt-1 block w-full rounded border p-2 font-mono" oninput="recalcPoteau()">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-500">Béton f<sub>c28</sub> (MPa)</label>
+                                    <input id="poteau-fc" type="number" value="25" class="mt-1 block w-full rounded border p-2 font-mono" oninput="recalcPoteau()">
+                                </div>
+                                <button onclick="resetPoteauDefaults()" class="w-full text-center text-blue-600 hover:text-blue-800 font-semibold text-xs py-1">Restaurer les valeurs du rapport d'origine</button>
+                            </div>
+                        </div>
+
+                        <!-- Results & Schema -->
+                        <div class="p-4 bg-white rounded-lg border flex flex-col justify-between h-full min-h-[250px]">
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm mb-3 border-b pb-1">Résultat du Diagnostic</h4>
+                                <div class="space-y-2 text-xs mb-4">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-500">Section Transversale B<sub>c</sub> :</span>
+                                        <span id="poteau-bc-res" class="font-bold">1600.00 cm²</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-500">Contrainte limite adm. (0.35) :</span>
+                                        <span class="font-mono">≤ 0.350</span>
+                                    </div>
+                                    <div class="flex justify-between items-center pt-2 border-t">
+                                        <span class="text-gray-700 font-semibold">Indice de contrainte réduit (ν) :</span>
+                                        <span id="poteau-nu-res" class="text-lg font-extrabold text-blue-700 font-mono">0.240</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="poteau-status-card" class="p-3 bg-emerald-50 text-emerald-900 border border-emerald-200 rounded font-bold text-xs flex items-center gap-2">
+                                <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                <span id="poteau-status-text">Section Pourvue Suffisante (ν ≤ 0.35)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ferraillage Choisi Poteaux -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                    <h4 class="text-md font-bold text-slate-900 mb-3">5.2 Ferraillage Adopté et Vérifié pour les Poteaux Existants</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-slate-50 p-4 rounded border flex flex-col justify-between">
+                            <div>
+                                <span class="text-xs text-gray-500 uppercase font-semibold">Armatures Longitudinales</span>
+                                <div class="text-xl font-extrabold text-slate-800 mt-1">12 HA 14</div>
+                                <p class="text-[11px] text-gray-500 mt-2">Section d'acier fournie : <strong class="text-emerald-700">18.47 cm²</strong> (Requise : 17.97 cm²). Ratio > 1% conforme aux limites RPA 2024.</p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded border flex flex-col justify-between">
+                            <div>
+                                <span class="text-xs text-gray-500 uppercase font-semibold">Armatures Transversales</span>
+                                <div class="text-xl font-extrabold text-slate-800 mt-1">HA 8 (Cadres)</div>
+                                <p class="text-[11px] text-gray-500 mt-2">Espacement réglé à <strong>14 cm</strong>. Renforcé à 10 cm en zones nodales selon exigences parasismiques du RPA.</p>
+                            </div>
+                        </div>
+                        <!-- Drawing Schema Section -->
+                        <div class="bg-slate-50 p-3 rounded border flex items-center justify-center">
+                            <svg class="w-32 h-32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="10" y="10" width="80" height="80" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
+                                <rect x="15" y="15" width="70" height="70" stroke="#0284c7" stroke-width="1.5" stroke-dasharray="2 2" fill="none"/>
+                                <!-- 12 bars representation -->
+                                <circle cx="15" cy="15" r="4" fill="#1e293b"/>
+                                <circle cx="50" cy="15" r="4" fill="#1e293b"/>
+                                <circle cx="85" cy="15" r="4" fill="#1e293b"/>
+                                
+                                <circle cx="15" cy="50" r="4" fill="#1e293b"/>
+                                <circle cx="85" cy="50" r="4" fill="#1e293b"/>
+                                
+                                <circle cx="15" cy="85" r="4" fill="#1e293b"/>
+                                <circle cx="50" cy="85" r="4" fill="#1e293b"/>
+                                <circle cx="85" cy="85" r="4" fill="#1e293b"/>
+                                
+                                <circle cx="32" cy="15" r="3.5" fill="#475569"/>
+                                <circle cx="68" cy="15" r="3.5" fill="#475569"/>
+                                <circle cx="32" cy="85" r="3.5" fill="#475569"/>
+                                <circle cx="68" cy="85" r="3.5" fill="#475569"/>
+                                <text x="25" y="53" fill="#0284c7" class="text-[8px] font-bold">12 HA 14</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- SECTION 6: Vérification des Poutres -->
+            <section id="poutres" class="section hidden space-y-6">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                        <span class="bg-blue-600 text-white w-7 h-7 rounded-full flex items-center justify-center text-xs">6</span>
+                        Vérification de la Capacité Portante des Poutres
+                    </h3>
+                    <p class="text-xs text-slate-600 mb-4">
+                        Certains éléments longitudinaux (poutres de sections <span class="font-bold">30 × 40 cm</span>) sous l'effet de sollicitations sismiques cumulées de flexion et de cisaillement nécessitent d'être vérifiés aux états limites d'efforts réduits.
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                        <!-- Inputs -->
+                        <div class="p-4 bg-slate-50 border rounded-lg">
+                            <h4 class="font-bold text-slate-800 text-sm mb-3">Vérificateur Dynamique - Poutre 30x40</h4>
+                            <div class="space-y-3 text-xs">
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-gray-500">Moment Fléchissant M<sub>u</sub> (kN.m)</label>
+                                        <input id="poutre-mu" type="number" value="297.57" class="mt-1 block w-full rounded border p-2 font-mono" oninput="recalcPoutre()">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-500">Effort Tranchant V<sub>u</sub> (kN)</label>
+                                        <input id="poutre-vu" type="number" value="363.54" class="mt-1 block w-full rounded border p-2 font-mono" oninput="recalcPoutre()">
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-gray-500">Largeur b (cm)</label>
+                                        <input id="poutre-b" type="number" value="30" class="mt-1 block w-full rounded border p-2 font-mono" oninput="recalcPoutre()">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-500">Hauteur h (cm)</label>
+                                        <input id="poutre-h" type="number" value="40" class="mt-1 block w-full rounded border p-2 font-mono" oninput="recalcPoutre()">
+                                    </div>
+                                </div>
+                                <button onclick="resetPoutreDefaults()" class="w-full text-center text-blue-600 hover:text-blue-800 font-semibold text-xs py-1">Restaurer les valeurs critiques du rapport d'origine</button>
+                            </div>
+                        </div>
+
+                        <!-- Results -->
+                        <div class="p-4 bg-white rounded-lg border flex flex-col justify-between h-full min-h-[250px]">
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm mb-3 border-b pb-1">Analyse des Limites structurales</h4>
+                                <div class="space-y-2 text-xs mb-4">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-500">Moment Réduit Calculé (<span class="math">μ<sub>u</sub></span>) :</span>
+                                        <span id="poutre-mu-res" class="font-bold font-mono text-red-600">0.540</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-500">Limite réglementaire (<span class="math">μ<sub>lim</sub></span>) :</span>
+                                        <span class="font-semibold text-slate-700">0.392</span>
+                                    </div>
+                                    <div class="flex justify-between pt-1">
+                                        <span class="text-gray-500">Cisaillement Réduit (<span class="math">τ<sub>u</sub></span>) :</span>
+                                        <span id="poutre-tau-res" class="font-bold font-mono text-red-600">3.37 MPa</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-500">Contrainte Admissible (<span class="math">τ<sub>max</sub></span>) :</span>
+                                        <span class="font-semibold text-slate-700">3.33 MPa</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="poutre-status-card" class="p-3 bg-red-50 text-red-900 border border-red-200 rounded font-bold text-xs flex items-start gap-2">
+                                <svg class="w-5 h-5 text-red-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                                <span id="poutre-status-text">ALERTE ! Section insuffisante. Nécessite d'être redimensionnée ou de disposer d'armatures comprimées d'acier doublées.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3D Plan Highlighting Critical Beams -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                    <h4 class="text-md font-bold text-slate-900 mb-2">Identification des Poutres Déficitaires sur Portique de Façade</h4>
+                    <p class="text-xs text-slate-500 mb-4">Ces éléments ont été précisément localisés sous l'effet de la combinaison sismique d'accélération <span class="font-bold">N°11 : Acc.Hor_G+psiQ+E1_(-Ex+0.3Ey)</span>.</p>
+                    
+                    <div class="bg-slate-900 p-4 rounded-lg flex items-center justify-center">
+                        <svg class="w-full max-w-lg h-44" viewBox="0 0 500 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Frame representation Grid -->
+                            <!-- Ground line -->
+                            <line x1="20" y1="150" x2="480" y2="150" stroke="#475569" stroke-width="2"/>
+                            
+                            <!-- Columns -->
+                            <line x1="50" y1="150" x2="50" y2="30" stroke="#475569" stroke-width="3"/>
+                            <line x1="190" y1="150" x2="190" y2="30" stroke="#475569" stroke-width="3"/>
+                            <line x1="310" y1="150" x2="310" y2="30" stroke="#475569" stroke-width="3"/>
+                            <line x1="430" y1="150" x2="430" y2="30" stroke="#475569" stroke-width="3"/>
+
+                            <!-- Standard Beams in Grey -->
+                            <line x1="50" y1="70" x2="430" y2="70" stroke="#94a3b8" stroke-width="4"/> <!-- 2nd floor -->
+                            <line x1="50" y1="30" x2="430" y2="30" stroke="#94a3b8" stroke-width="4"/> <!-- Top roof -->
+
+                            <!-- Critical Beams highlighted in RED (1st level facade) -->
+                            <line x1="50" y1="110" x2="190" y2="110" stroke="#ef4444" stroke-width="6"/>
+                            <line x1="190" y1="110" x2="310" y2="110" stroke="#ef4444" stroke-width="6"/>
+                            <line x1="310" y1="110" x2="430" y2="110" stroke="#94a3b8" stroke-width="4"/> <!-- Standard part -->
+
+                            <!-- Labels and Annotations -->
+                            <text x="75" y="100" fill="#fca5a5" class="text-[9px] font-bold">DÉFICITAIRE (My = -317.48 kN.m)</text>
+                            <text x="200" y="100" fill="#fca5a5" class="text-[9px] font-bold">DÉFICITAIRE (My = 266.01 kN.m)</text>
+                            
+                            <text x="350" y="103" fill="#94a3b8" class="text-[8px]">Poutre Conforme</text>
+                            <text x="25" y="143" fill="#94a3b8" class="text-[8px] font-bold">Niveau RDC</text>
+                        </svg>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- SECTION 7: Synthèse et Conclusions -->
+            <section id="synthese" class="section hidden space-y-6">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                        <span class="bg-blue-600 text-white w-7 h-7 rounded-full flex items-center justify-center text-xs">7</span>
+                        Synthèse d'Expertise & Recommandations
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div class="border-l-4 border-amber-500 pl-4 py-1 bg-amber-50 rounded-r">
+                            <h4 class="font-bold text-amber-800 text-sm">Constat Structurel Majeur</h4>
+                            <p class="text-xs text-amber-900 mt-1 leading-relaxed" style="text-align: justify;">
+                                L'ossature en béton armé du bâtiment R+2, implanté en zone de forte sismicité, présente une rigidité globale satisfaisante grâce à l'association de voiles de contreventement et de portiques, assurant une bonne reprise des actions horizontales. Cette configuration structurelle permet de limiter les efforts normaux dans les poteaux existants et de garantir un comportement globalement favorable sous sollicitations sismiques réglementaires.
+
+Toutefois, l'analyse de la structure sous l'effet d'un séisme majeur correspondant au niveau de sismicité extrême de la Zone VI met en évidence l'insuffisance de résistance de deux (02) à trois (03) poutres principales du portique de façade, localisées au droit des extrémités des voiles de contreventement. Ces éléments présentent des vérifications non satisfaisantes vis-à-vis des sollicitations de cisaillement critique et de flexion simple, nécessitant des mesures de renforcement appropriées afin d'assurer leur conformité aux exigences de sécurité structurale et de comportement parasismique.
+                            </p>
+                        </div>
+
+                        <div class="border-l-4 border-blue-500 pl-4 py-1 bg-blue-50 rounded-r">
+                            <h4 class="font-bold text-blue-800 text-sm">Recommandations de Réparation & Renforcement</h4>
+                            <ul class="list-disc pl-5 mt-2 text-xs text-blue-900 space-y-1">
+                                <li><strong>Option 1 :</strong> Chemisage métallique (renfort en acier structurel) ou micro-bétonnage des poutres concernées pour augmenter l'inertie géométrique de la section.</li>
+                                <li><strong>Option 2 :</strong> Prevoir des goussets de renforcement aux extrémités des poutres.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Final diagnostic validation sign -->
+                <div class="bg-slate-900 text-white p-6 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h4 class="text-lg font-bold">Validation Finale de Stabilité de l'Ouvrage</h4>
+                        <p class="text-xs text-slate-400 mt-1">Sauf avis contraire lié aux modifications ultérieures du plan de renforcement des poutres.</p>
+                    </div>
+                    <div class="bg-blue-600 px-4 py-2 rounded text-xs font-bold uppercase tracking-wider">
+                        Avis Favorable Sous Réserves
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- SECTION 8: Références de calcul -->
+            <section id="references" class="section hidden space-y-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                        <span class="bg-blue-600 text-white w-7 h-7 rounded-full flex items-center justify-center text-xs">8</span>
+                        Références de Calcul
+                    </h3>
+                    <p class="text-sm text-slate-600 leading-relaxed mb-6">
+                        Les outils et plateformes de vérification interactive utilisés pour l'évaluation de la qualité structurale ainsi que pour la rédaction de la présente note de calcul sont consultables via les liens de documentation officiels ci-dessous :
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Lien 1 -->
+                        <a href="https://lenavire.github.io/KL_R/" target="_blank" class="block p-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg shadow-sm transition-all hover:border-blue-500 group">
+                            <div class="flex items-start gap-3">
+                                <div class="p-2.5 bg-blue-50 text-blue-600 rounded-lg group-hover:bg-blue-100 transition-colors shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-800 text-sm group-hover:text-blue-700 transition-colors">Évaluation de KL_R</h4>
+                                    <p class="text-xs text-slate-500 mt-1">Plateforme d'estimation et d'évaluation du coefficient correctif par critères cumulatifs.</p>
+                                    <span class="text-[11px] text-blue-600 font-medium underline mt-2 inline-block">lenavire.github.io/KL_R/</span>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- Lien 2 -->
+                        <a href="https://lenavire.github.io/LaNote/" target="_blank" class="block p-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg shadow-sm transition-all hover:border-blue-500 group">
+                            <div class="flex items-start gap-3">
+                                <div class="p-2.5 bg-emerald-50 text-emerald-600 rounded-lg group-hover:bg-emerald-100 transition-colors shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-800 text-sm group-hover:text-emerald-700 transition-colors">LaNote - Documentation</h4>
+                                    <p class="text-xs text-slate-500 mt-1">Plate forme pour le calcul du ferraillage des poteaux -Poutres ainsi que les justification sismique applicable dans le chapitre V de RPA 2024.</p>
+                                    <span class="text-[11px] text-emerald-600 font-medium underline mt-2 inline-block">lenavire.github.io/LaNote/</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <style>
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+
+    <!-- Interactive script algorithms -->
+    <script>
+        // NAVIGATION SYSTEM
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(sec => {
+                sec.classList.remove('block');
+                sec.classList.add('hidden');
+            });
+
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.classList.remove('active', 'bg-slate-800', 'text-white', 'border-blue-500');
+                item.classList.add('text-slate-300', 'border-transparent');
+                item.style.borderLeftColor = 'transparent';
+            });
+
+            const targetSection = document.getElementById(sectionId);
+            if(targetSection) {
+                targetSection.classList.remove('hidden');
+                targetSection.classList.add('block');
+            }
+
+            const targetNav = document.getElementById('nav-' + sectionId);
+            if(targetNav) {
+                targetNav.classList.add('active');
+            }
+
+            document.getElementById('main-content').scrollTop = 0;
+        }
+
+        // SHEAR FORCE CALCULATOR
+        function recalcShear() {
+            const mass = parseFloat(document.getElementById('sim-mass').value) || 0;
+            const r = parseFloat(document.getElementById('sim-r').value) || 1.5;
+            const accel = parseFloat(document.getElementById('sim-accel').value) || 0.936;
+
+            const w = mass * 10; // gravity approximation to match the report W = 5366.8 kN
+            const v = w * accel;
+            const v80 = v * 0.8;
+
+            document.getElementById('sim-v-result').innerText = v.toFixed(2) + " kN";
+            document.getElementById('sim-v80-result').innerText = v80.toFixed(2) + " kN";
+        }
+
+        // COLUMN NORMAL FORCE CHECKER
+        function recalcPoteau() {
+            const nd = parseFloat(document.getElementById('poteau-nd').value) || 0;
+            const b = parseFloat(document.getElementById('poteau-b').value) || 40;
+            const h = parseFloat(document.getElementById('poteau-h').value) || 40;
+            const fc = parseFloat(document.getElementById('poteau-fc').value) || 25;
+
+            // Area of section
+            const bc = b * h;
+            document.getElementById('poteau-bc-res').innerText = bc.toFixed(2) + " cm²";
+
+            // Reduced Force
+            // nd in kN, bc in cm^2, fc in MPa (which is 10 * kN/cm^2, hence division factor)
+            // fc = 25 MPa = 2.5 kN/cm²
+            const fc_kn_cm = fc / 10;
+            const nu = nd / (bc * fc_kn_cm);
+            
+            document.getElementById('poteau-nu-res').innerText = nu.toFixed(3);
+
+            const statusCard = document.getElementById('poteau-status-card');
+            const statusText = document.getElementById('poteau-status-text');
+
+            if (nu <= 0.35) {
+                statusCard.className = "p-3 bg-emerald-50 text-emerald-900 border border-emerald-200 rounded font-bold text-xs flex items-center gap-2";
+                statusCard.innerHTML = `<svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg> <span id="poteau-status-text">Section Pourvue Suffisante (ν ≤ 0.35)</span>`;
+            } else {
+                statusCard.className = "p-3 bg-red-50 text-red-900 border border-red-200 rounded font-bold text-xs flex items-center gap-2";
+                statusCard.innerHTML = `<svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg> <span id="poteau-status-text">ALERTE ! Section surchargée (ν > 0.35). Augmentez la section ou l'épaisseur du poteau.</span>`;
+            }
+        }
+
+        function resetPoteauDefaults() {
+            document.getElementById('poteau-nd').value = 960.93;
+            document.getElementById('poteau-mu').value = 295.03;
+            document.getElementById('poteau-b').value = 40;
+            document.getElementById('poteau-h').value = 40;
+            document.getElementById('poteau-fc').value = 25;
+            recalcPoteau();
+        }
+
+        // BEAM CAPACITY CHECKER
+        function recalcPoutre() {
+            const mu_val = parseFloat(document.getElementById('poutre-mu').value) || 0;
+            const vu_val = parseFloat(document.getElementById('poutre-vu').value) || 0;
+            const b = parseFloat(document.getElementById('poutre-b').value) || 30;
+            const h = parseFloat(document.getElementById('poutre-h').value) || 40;
+
+            const d = h * 0.9; // useful height
+            const fbu = 14.17; // design strength
+
+            // Reduced Moment mu_u = Mu / (b * d^2 * fbu)
+            // Mu in kN.m, convert to kN.cm (multiply by 100)
+            const mu_u = (mu_val * 100) / (b * Math.pow(d, 2) * (fbu / 10));
+            document.getElementById('poutre-mu-res').innerText = mu_u.toFixed(3);
+
+            // Shear stress tau_u = Vu / (b * d)
+            // Vu in kN, convert to N (Vu * 1000) / Area in mm^2 (b * d * 100)
+            // tau_u = (Vu * 10) / (b * d)
+            const tau_u = (vu_val * 10) / (b * d);
+            document.getElementById('poutre-tau-res').innerText = tau_u.toFixed(2) + " MPa";
+
+            const statusCard = document.getElementById('poutre-status-card');
+            
+            if (mu_u > 0.392 || tau_u > 3.33) {
+                statusCard.className = "p-3 bg-red-50 text-red-900 border border-red-200 rounded font-bold text-xs flex items-start gap-2";
+                let alertMsg = "ALERTE ! Section non-conforme.";
+                if (mu_u > 0.392) alertMsg += " Le moment fléchissant exige des armatures comprimées.";
+                if (tau_u > 3.33) alertMsg += " Effort tranchant trop élevé, augmentation de section impérative.";
+                statusCard.innerHTML = `<svg class="w-5 h-5 text-red-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg> <span>${alertMsg}</span>`;
+            } else {
+                statusCard.className = "p-3 bg-emerald-50 text-emerald-900 border border-emerald-200 rounded font-bold text-xs flex items-center gap-2";
+                statusCard.innerHTML = `<svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg> <span>La section de poutre répond favorablement aux exigences de capacité.</span>`;
+            }
+        }
+
+        function resetPoutreDefaults() {
+            document.getElementById('poutre-mu').value = 297.57;
+            document.getElementById('poutre-vu').value = 363.54;
+            document.getElementById('poutre-b').value = 30;
+            document.getElementById('poutre-h').value = 40;
+            recalcPoutre();
+        }
+
+        // Initialize calculations on window load
+        window.onload = function() {
+            recalcShear();
+            recalcPoteau();
+            recalcPoutre();
+        }
+    </script>
+</body>
+</html>
